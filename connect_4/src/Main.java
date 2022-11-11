@@ -1,5 +1,7 @@
 import java.util.Scanner;
 
+// TODO / Nice to have: Something that shows the placement of the previous turn
+// ^ something like arrow marks for which row and column, or use a background color
 public class Main {
 
     public static int ROWS = 6, COLUMNS = 7;
@@ -7,8 +9,9 @@ public class Main {
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_RED = "\u001B[31;1m";
+    public static final String ANSI_YELLOW = "\u001B[93;1m";
+    public static final String ANSI_BACK_WHITE = "\u001b[47m";
 
 
     public static void main(String[] args) {
@@ -26,13 +29,16 @@ public class Main {
         System.out.println("Name of second player: ");
         String secondPlayerName = myObj.nextLine();
 
+        // Store information about the previous player's turn
+        int prevPos = -1, prevHeight = -1;
+
         char player = FIRST_PLAYER;
         while (true) {
-            display(board);
+            display(board, prevPos, prevHeight);
 
             String playerName = player == FIRST_PLAYER ? firstPlayerName : secondPlayerName;
             String color = player == FIRST_PLAYER ? ANSI_RED : ANSI_YELLOW;
-            System.out.println("(" + color + "O" + ANSI_RESET + ") " + playerName + " pick a position: ");
+            System.out.println("(" + color + player + ANSI_RESET + ") " + playerName + "'s turn, pick a position (1 to 7): ");
             String input = myObj.nextLine();
 
             if (!isNumeric(input)) {
@@ -40,9 +46,10 @@ public class Main {
                 continue;
             }
 
-            int position = Integer.parseInt(input);
+            // Subtract 1 since index starts at 0 instead of 1
+            int position = Integer.parseInt(input) - 1;
             if (!isPositionWithinRange(position)) {
-                System.out.println("Please choose a range between 0 - 6");
+                System.out.println("Please choose a range between 1 to 7");
                 continue;
             }
 
@@ -55,14 +62,18 @@ public class Main {
             // Update the board
             board[positionHeight][position] = player;
 
+            // Store placement data
+            prevPos = position;
+            prevHeight = positionHeight;
+
             if (isPlayerWon(board, player)) {
-                display(board);
+                display(board, prevPos, prevHeight);
                 System.out.println("Game Over: " + playerName + " Wins!");
                 break;
             }
 
             if (isGameTied(board)) {
-                display(board);
+                display(board, prevPos, prevHeight);
                 System.out.println("Game Over: Tied Game!");
                 break;
             }
@@ -102,10 +113,10 @@ public class Main {
                 else
                     connections = 0;
             }
+            connections = 0;
         }
 
         // Check 2: Horizontal
-        connections = 0;
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
                 if (connections >= 4)
@@ -115,6 +126,7 @@ public class Main {
                 else
                     connections = 0;
             }
+            connections = 0;
         }
 
         // Check 3: Diagonal to the left
@@ -157,21 +169,30 @@ public class Main {
         return -1;
     }
 
-    public static void display(char[][] board) {
+    public static void display(char[][] board, int prevPos, int prevHeight) {
+        // Displaying the board
         System.out.println(ANSI_BLUE + "-----------------" + ANSI_RESET);
-
         for (int i = board.length - 1; i >= 0; i--) {
             System.out.print(ANSI_BLUE + "| " + ANSI_RESET);
-            for (int j = 0; j < board[0].length; j++)
-                System.out.print(board[i][j] + " ");
+            for (int j = 0; j < board[0].length; j++) {
+                String color = board[i][j] == FIRST_PLAYER ? ANSI_RED
+                        : board[i][j] == SECOND_PLAYER ? ANSI_YELLOW
+                        : ANSI_RESET;
+
+                // If condition valid: Print with background color to indicate previous placement
+                if (prevPos != -1 && prevHeight != -1 && prevPos == j && prevHeight == i)
+                    System.out.print(ANSI_BACK_WHITE + color + board[i][j] + ANSI_RESET + " ");
+                else
+                    System.out.print(color + board[i][j] + ANSI_RESET + " ");
+            }
             System.out.print(ANSI_BLUE + "|" + ANSI_RESET);
             System.out.println();
         }
-
         System.out.println(ANSI_BLUE + "-----------------" + ANSI_RESET);
 
+        // Displaying rows
         System.out.print(ANSI_BLUE + "| " + ANSI_RESET);
-        for (int i = 0; i < COLUMNS; i++)
+        for (int i = 1; i <= COLUMNS; i++)
             System.out.print(i + " ");
         System.out.print(ANSI_BLUE + "|" + ANSI_RESET);
         System.out.println();
