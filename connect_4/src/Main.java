@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class Main {
 
     public static int ROWS = 6, COLUMS = 7;
-    public static char EMPTY_INDICATOR = '-';
+    public static char EMPTY_INDICATOR = '-', FIRST_PLAYER = 'O', SECOND_PLAYER = 'X';
 
     public static void main(String[] args) {
         // Init board
@@ -14,8 +14,7 @@ public class Main {
 
         Scanner myObj = new Scanner(System.in);
 
-        // Player 1 will be 'O' and Player 2 will be 'X'
-        char player = 'O';
+        char player = FIRST_PLAYER;
         while (true) {
             display(board);
 
@@ -35,9 +34,15 @@ public class Main {
 
             // TODO adjust the display and fix the index checking...
             int positionHeight = getPositionHeight(board, position);
+            if (positionHeight == -1) {
+                System.out.println("Please choose a column with an empty slot");
+                continue;
+            }
+
+            // Update the board
             board[position][positionHeight] = player;
 
-            if (isPlayerWon()) {
+            if (isPlayerWon(board, player)) {
                 System.out.println("Game Over: " + player + " Wins!");
                 return;
             }
@@ -48,7 +53,7 @@ public class Main {
             }
 
             // Swap player's turn
-            player = player == '0' ? '1' : '0';
+            player = player == FIRST_PLAYER ? SECOND_PLAYER : FIRST_PLAYER;
         }
     }
 
@@ -60,11 +65,11 @@ public class Main {
         return true;
     }
 
-    public static boolean isPlayerWon() {
+    public static boolean isPlayerWon(char[][] board, char player) {
         return false;
     }
 
-    // Checks if the string is an integer value
+    // Return: If string is a numeric string
     public static boolean isNumeric(String string) {
         if(string == null || string.equals("")) {
             return false;
@@ -81,7 +86,7 @@ public class Main {
     // Returns: if the player's desired location is valid.
     // Valid when: pos is within the range 0 - 6, inclusive and space is remaining in the column pos
     public static boolean isPositionWithinRange(int pos) {
-        return pos >= 0 && pos < COLUMS;
+        return pos >= 0 && pos < ROWS;
     }
 
     // PreCheck: Position is valid
