@@ -93,13 +93,11 @@ public class Main {
         return true;
     }
 
-    // TODO
     // Note: The checking algorithms are not the most efficient, but easiest to understand
     // Condition for winning: 4 connections in a row
     // Check 1: Vertical
     // Check 2: Horizontal
-    // Check 3: Diagonal to the left
-    // Check 4: Diagonal to the right
+    // Check 3 - 6: Diagonal directions
     public static boolean isPlayerWon(char[][] board, char player) {
         int connections = 0; // Used to keep track of how many connects in a row
 
@@ -129,13 +127,41 @@ public class Main {
             connections = 0;
         }
 
-        // Check 3: Diagonal to the left
-        connections = 0;
 
-        // Check 4: Diagonal to the right
-        connections = 0;
+        for (int i = 0; i < COLUMNS; i++) {
+            for (int j = 0; j < ROWS; j++) {
+                // Check 3: Diagonal to the up right
+                if (getDiagonalConnections(board, 0, i, j, 1, 1, player) >= 4)
+                    return true;
+                // Check 4: Diagonal to the down right
+                if (getDiagonalConnections(board, 0, i, j, 1, -1, player) >= 4)
+                    return true;
+                // Check 5: Diagonal to the up left
+                if (getDiagonalConnections(board, 0, i, j, -1, 1, player) >= 4)
+                    return true;
+                // Check 6: Diagonal to the down left
+                if (getDiagonalConnections(board, 0, i, j, -1, -1, player) >= 4)
+                    return true;
+            }
+        }
 
         return false;
+    }
+
+    // This function is used to determine the number of connections in a row
+    // using recursion.
+    public static int getDiagonalConnections(char[][] board, int currentCount, int currentXIndex,
+                                             int currentYIndex, int xChange, int yChange, char player) {
+        int xIndex = currentXIndex - 1, yIndex = currentYIndex - 1;
+        if (currentXIndex <= 0 || currentYIndex <= 0 || xIndex >= COLUMNS || yIndex >= ROWS)
+            return currentCount;
+
+        if (board[xIndex][yIndex] != player)
+            return currentCount;
+
+        int nextXIndex = currentXIndex + xChange;
+        int nextYIndex = currentYIndex + yChange;
+        return getDiagonalConnections(board, currentCount + 1, nextXIndex, nextYIndex, xChange, yChange, player);
     }
 
     // Return: If string is a numeric string
