@@ -153,7 +153,7 @@ public class Main {
     public static int getDiagonalConnections(char[][] board, int currentCount, int currentXIndex,
                                              int currentYIndex, int xChange, int yChange, char player) {
         int xIndex = currentXIndex - 1, yIndex = currentYIndex - 1;
-        if (currentXIndex <= 0 || currentYIndex <= 0 || xIndex >= COLUMNS || yIndex >= ROWS)
+        if (currentXIndex <= 0 || currentYIndex <= 0 || xIndex >= ROWS || yIndex >= COLUMNS)
             return currentCount;
 
         if (board[xIndex][yIndex] != player)
