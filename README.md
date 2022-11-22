@@ -3,6 +3,7 @@
 **Connect 4**:
 
 Two player game where the players try to get 4 connected pieces in a row on a 7x6 board. The first player to connect 4 pieces horizonatally, vertically, or diagonally wins.
+https://en.wikipedia.org/wiki/Connect_Four
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
