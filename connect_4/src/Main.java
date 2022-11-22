@@ -1,7 +1,5 @@
 import java.util.Scanner;
 
-// TODO / Nice to have: Something that shows the placement of the previous turn
-// ^ something like arrow marks for which row and column, or use a background color
 public class Main {
 
     public static int ROWS = 6, COLUMNS = 7;
