@@ -1,4 +1,10 @@
 # Java-Practice
+
+**Connect 4**:
+
+Two player game where the players try to get 4 connected pieces in a row on a 7x6 board. The first player to connect 4 pieces horizonatally, vertically, or diagonally wins.
+
+
 **Palindrome Checker**:
 
 Palindrome: a word, phrase, or sequence that reads the same backward as forward;
